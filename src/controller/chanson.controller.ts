@@ -1,20 +1,24 @@
-import {ChansonService} from "../service/chanson.service";
+import {chansonService} from "../service/chanson.service";
 import {Request, Response} from "express";
+import { Chanson } from "../entities/Chanson";
+import { myDataSource } from "../config/datasource";
 
 export class ChansonController {
 
-    private service = new ChansonService()
+    private service = chansonService
 
     getAllChansons = (req : Request, res : Response) => {
-        res.send(this.service.getAllChansons())
+        this.service.getAllChansons().then((data) => res.json(data))
     }
 
-    getChanson = (req: Request, res: Response) => {
-        res.send(this.service.getChanson(Number(req.params.id)))
+    getChanson = async (req: Request, res: Response) => {
+        res.json( await this.service.getChanson(Number(req.params.id)))
     }
-
-    getChansonsByAlbumId = (req: Request, res: Response) => {
-        res.send(this.service.getChansonsByAlbumId(Number(req.params.id)));
+    getChansonByTitle =  (req: Request, res: Response) => {
+        const title = req.query.title!.toString()
+        return this.service.getChansonByTitle(title).then(data => {
+            res.json(data)
+        })
     }
 
     addChanson = (req: Request, res: Response) => {
@@ -22,16 +26,19 @@ export class ChansonController {
             this.service.postChanson(req.body)
             res.sendStatus(201)
         } catch (e) {
-            res.sendStatus(404)
+            res.sendStatus(400)
         }
+    }
+    updateChanson = (req: Request, res: Response) => {
+        this.service.updateChanson(req.body, +req.params.id).then(data => res.status(200).json(data))
     }
 
     deleteChanson = (req: Request, res: Response) => {
         try {
-        this.service.deleteChanson(Number(req.params.id))
+            this.service.deleteChanson(Number(req.params.id))
             res.sendStatus(204)
         } catch (e) {
-            res.sendStatus(404)
+            res.sendStatus(400)
         }
 
     }

@@ -1,20 +1,19 @@
-import {ChansonRepository} from "../repository/chanson.repository";
+import {chansonRepository} from "../repository/chanson.repository";
 import {Chanson} from "../entities/Chanson";
 
 export class ChansonService {
 
-    private repo = new ChansonRepository()
+    private repo = chansonRepository
 
-    getAllChansons = () => {
+    getAllChansons = (): Promise<Chanson[]> => {
         return this.repo.getAllChansons()
     }
 
-    getChanson = (id: number) => {
+    getChanson = async (id: number) => {
         return this.repo.getChansonById(id)
     }
-
-    getChansonsByAlbumId = (id: number) => {
-        return this.repo.getChansonsByAlbumId(id)
+    getChansonByTitle = async (title: string) => {
+        return this.repo.getChansonByTitle(title)
     }
 
     postChanson = (chanson: Chanson) => {
@@ -24,4 +23,10 @@ export class ChansonService {
     deleteChanson = (id: number) => {
         return this.repo.deleteChanson(id)
     }
+
+    updateChanson = (chanson: Chanson, id: number) => {
+        return this.repo.updateChanson(chanson, id)
+    }
 }
+
+export const chansonService = Object.freeze(new ChansonService())
