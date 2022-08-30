@@ -30,7 +30,13 @@ export class ChansonController {
         }
     }
     updateChanson = (req: Request, res: Response) => {
-        this.service.updateChanson(req.body, +req.params.id).then(data => res.status(200).json(data))
+        this.service.updateChanson(+req.params.id, req.query)
+        .then(data => res.status(200).json(data))
+    }
+    
+    replaceChanson = (req: Request, res: Response) => {
+        this.service.replaceChanson(+req.params.id, req.body)
+            .then(data => res.status(200).json(data))
     }
 
     deleteChanson = (req: Request, res: Response) => {

@@ -1,10 +1,10 @@
 import { DeleteResult, Repository } from 'typeorm';
 import { myDataSource } from '../config/datasource';
-import {data} from '../data';
+
 import {Chanson} from "../entities/Chanson";
 class ChansonRepository extends Repository<Chanson>{
 
-    data : Chanson[] = data;
+
 
     getAllChansons = () : Promise<Chanson[]> => {
         return myDataSource.getRepository(Chanson).find();
@@ -14,10 +14,10 @@ class ChansonRepository extends Repository<Chanson>{
         return myDataSource.getRepository(Chanson).findOneBy({id: id})
     }
     getChansonByTitle = (title: string) => {
-        return myDataSource.getRepository(Chanson).query(`SELECT * FROM chanson WHERE title = '${title}'`)
-        // return myDataSource.getRepository(Chanson).createQueryBuilder('chanson').where('chanson.title = :title', {title: title}).getOne()
+        // return myDataSource.getRepository(Chanson).query(`SELECT * FROM chanson WHERE title = '${title}'`)
+        return myDataSource.getRepository(Chanson).createQueryBuilder('chanson').where('chanson.title = :title', {title: title}).getOne()
     }
-    updateChanson = async(newChanson: Chanson, id: number) => {
+    updateChanson = async(id: number, newChanson: Chanson) => {
         const chanson = await myDataSource.getRepository(Chanson).findOneByOrFail({id: id})
         myDataSource.getRepository(Chanson).merge(chanson, newChanson)
         const result = await myDataSource.getRepository(Chanson).save(chanson);
@@ -35,4 +35,4 @@ class ChansonRepository extends Repository<Chanson>{
 } 
 
 // deux argts : classe sur laquelle il travaille et la data source manager
-export const chansonRepository = Object.freeze(new ChansonRepository(Chanson, myDataSource.manager))   
+export const chansonRepository = Object.freeze(new ChansonRepository(Chanson, myDataSource.manager))

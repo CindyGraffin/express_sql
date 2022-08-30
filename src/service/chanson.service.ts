@@ -1,5 +1,6 @@
 import {chansonRepository} from "../repository/chanson.repository";
 import {Chanson} from "../entities/Chanson";
+import { ParsedQs } from "qs";
 
 export class ChansonService {
 
@@ -24,9 +25,15 @@ export class ChansonService {
         return this.repo.deleteChanson(id)
     }
 
-    updateChanson = (chanson: Chanson, id: number) => {
-        return this.repo.updateChanson(chanson, id)
+    replaceChanson = (id: number, chanson: Chanson) => {
+        return this.repo.update(id, chanson)
     }
-}
+
+    updateChanson = (id: number, queryParams: any) => {
+        const newChanson = Object.assign({}, Chanson, {...queryParams})
+        console.log(queryParams)
+        return this.repo.updateChanson(id, newChanson)
+    }
+}  
 
 export const chansonService = Object.freeze(new ChansonService())
